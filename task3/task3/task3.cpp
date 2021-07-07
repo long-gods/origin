@@ -14,17 +14,86 @@ struct face {
     int n;
     int p[4];
 };
+
+
 class off
 {
+    friend class readFile;
 private:
     int pointnum, facenum;
-    point p[1000];
-    face f[1000];
+    point p[100];
+    face f[100];
 public:
     off() {};
+    off(std::string strpath);
+    void getpoint(int n) {
+        cout << p[n].x << p[n].y << p[n].z << endl;
+    }
+    void getface(int n) {
+        for (int i = 0; i < f[n].n; i++)
+            getpoint(f[n].p[i]);
+    }
+    void show()
+    {
+        cout << pointnum << " " << facenum << endl;
+        for (int i = 0; i < pointnum; i++)
+            cout << p[i].x << " " << p[i].y << " " << p[i].z << endl;
+        for (int i = 0; i < facenum; i++)
+        {
+            cout << f[i].n << " ";
+            for (int j = 0; j < f[i].n; j++)
+                cout << f[i].p[j] << " ";
+            cout << endl;
+        }
+    }
 };
 
-void readFileData(ifstream& file,int& pointnum,int &facenum,point* p,face* f) {
+off::off(std::string strpath) {
+    ifstream readFile;                             //2.get file instance
+    readFile.open(strpath, ios::in);        //3.open the file in mode xxx & judge the open result
+    if (!readFile.is_open()) {
+        cout << "open error" << endl;
+    }
+    string strBuffer;
+    int flag = 0;
+    while (readFile >> strBuffer) {
+        flag++;
+        if (flag == 2)
+            pointnum = atoi(strBuffer.c_str());
+        if (flag == 3)
+        {
+            facenum = atoi(strBuffer.c_str());
+            readFile >> strBuffer;
+            flag = 0;
+            while (flag < 3 * pointnum)
+            {
+                readFile >> strBuffer;
+                if (flag % 3 == 0)
+                    p[(flag) / 3].x = atof(strBuffer.c_str());
+                else if (flag % 3 == 1)
+                    p[(flag) / 3].y = atof(strBuffer.c_str());
+                else if (flag % 3 == 2)
+                    p[(flag) / 3].z = atof(strBuffer.c_str());
+                flag++;
+            }
+            int i = 0;
+            while (readFile >> strBuffer)
+            {
+                f[i].n = atoi(strBuffer.c_str());
+                for (int j = 0; j < f[i].n; j++)
+                {
+                    readFile >> strBuffer;
+                    f[i].p[j] = atoi(strBuffer.c_str());
+                }
+                i++;
+            }
+        }
+
+    }
+    readFile.close();
+};
+
+/*void readFileData(ifstream& file) {
     string strBuffer;
     int flag=0;
     while (file >> strBuffer) {
@@ -33,20 +102,19 @@ void readFileData(ifstream& file,int& pointnum,int &facenum,point* p,face* f) {
             pointnum= atoi(strBuffer.c_str());
         if (flag == 3)
         {
-            flag -= 3;
             facenum = atoi(strBuffer.c_str());
             file >> strBuffer;
-            file >> strBuffer;
+            flag = 0;
             while (flag<3*pointnum)
             {
-                flag++;
                 file >> strBuffer;
-                if (0 < flag <= 3 * pointnum && flag%3==0)
+                if ( flag%3==0)
                     p[(flag) / 3].x = atof(strBuffer.c_str());
-                else if(0 < flag <= 3 * pointnum && flag % 3 == 1)
+                else if(flag % 3 == 1)
                     p[(flag) / 3].y = atof(strBuffer.c_str());
-                else if (0 < flag <= 3 * pointnum && flag % 3 == 2)
+                else if (flag % 3 == 2)
                     p[(flag) / 3].z = atof(strBuffer.c_str());
+                flag++;
             }
             int i = 0;
             while (file >> strBuffer)
@@ -62,32 +130,18 @@ void readFileData(ifstream& file,int& pointnum,int &facenum,point* p,face* f) {
         }
 
     }
-}
+}*/
 
 
 int main()
-{
-    ifstream readFile;                             //2.get file instance
-    readFile.open("m784.off", ios::in);        //3.open the file in mode xxx & judge the open result
-    if (!readFile.is_open()) {
-        cout << "open error" << endl;
-        return 0;
-    }
-    int pointnum, facenum;
-    point p[1000];
-    face f[1000];
-    readFileData(readFile,pointnum,facenum,p,f);
-    cout << pointnum << " " << facenum << endl;
-    for (int i = 0; i < pointnum; i++)
-        cout << p[i].x << " " << p[i].y << " " << p[i].z << endl;
-    for (int i = 0; i < facenum; i++)
-    {
-        cout << f[i].n << " ";
-        for (int j = 0; j < f[i].n; j++)
-            cout << f[i].p[j] << " ";
-        cout << endl;
-    }
-    readFile.close();                              //5.close the file
+{                           //5.close the file
+    off of("m784.off");
+    cout << "输出点8" << endl;
+    of.getpoint(8);
+    cout << "输出面8" << endl;
+    of.getface(8);
+    cout << "全输出" << endl;
+    of.show();
     return 0;
 }
 
