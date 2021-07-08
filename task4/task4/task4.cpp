@@ -9,15 +9,14 @@ class Animal
 {
 public:
     Animal() { cout << "Animal" << endl; }
-    virtual int speak() { return 0; };
+    virtual void speak() {  };
 };
 
 class Dog :public Animal{
 public:
     Dog() { cout << "Dog" << endl; }
-    int speak() {
+    void speak() {
         cout << "wang" << endl;
-        return 1;
     }
     void swim() {
         cout << "swim" << endl;
@@ -27,9 +26,8 @@ public:
 class Cat :public Animal {
 public:
     Cat() { cout << "Cat" << endl; }
-    int  speak() {
+    void  speak() {
         cout << "miao" << endl;
-        return 2;
     }
 };
 int main()
@@ -45,19 +43,18 @@ int main()
     vector<Animal*> v;
     for (int i = 0; i < n; i++)
     {
-        Dog d;
-        v.push_back(&d);
-        Cat c;
-        v.push_back(&c);
+        v.push_back(new Dog);
+        v.push_back(new Cat);
     }
 
-    for (vector<Animal*>::iterator it = v.begin(); it != v.end(); it++)
+    for (auto vs:v)
     {
-        if ((*it)->speak() == 1)
+        if (Dog* d = dynamic_cast<Dog*>(vs))
         {
-            Dog* d = dynamic_cast<Dog*>(*it);
             d->swim();
         }
+        delete vs;
+        vs = NULL;//不使用则变成野指针
     }
     cout << endl;
 }
