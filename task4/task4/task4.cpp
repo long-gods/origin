@@ -55,7 +55,7 @@ int main()
     {
         if ((*it)->speak() == 1)
         {
-            Dog* d = (Dog*)(*it);
+            Dog* d = dynamic_cast<Dog*>(*it);
             d->swim();
         }
     }
