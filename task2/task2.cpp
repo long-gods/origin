@@ -53,6 +53,7 @@ int main()
     for (int i = 0; i < n; i++)
         cout << a[i] << " ";
     cout << endl;
+    delete a;
     cout << "输入double型数据数量：";
     cin >> n;
     double* b = new double[n];
@@ -63,6 +64,7 @@ int main()
     for (int i = 0; i < n; i++)
         cout << b[i] << " ";
     cout << endl;
+    delete b;
     return 0;
 }
 
