@@ -1,10 +1,36 @@
 #include "SupermarketManager.h"
-#include<iostream>
 using namespace std;
+void SupermarketManager::menu()
+{
+	int num = 1;
+	while (num)
+	{
+		cout << "1、新增商品信息" << endl;
+		cout << "2、删除商品信息" << endl;
+		cout << "3、修改商品信息（ps：例如按Id修改价格、描述等）" << endl;
+		cout << "4、商品信息检索" << endl;
+		cout << "5、商品按价格排序输出" << endl;
+		cout << "6、输出价格前五的商品" << endl;
+		cout << "0、退出" << endl;
+		cout << "请选择功能(0 - 6)：" << endl;
+		cin >> num;
+		switch (num) {
+		case 0:break; break;
+		case 1:add(); break;
+		case 2:del(); break;
+		case 3:changeinfor(); break;
+		case 4:Search(); break;
+		case 5:SortAndOut(); break;
+		case 6:PriceNum5(); break;
+		}
+	}
+}
 void SupermarketManager::add()
 {
+	cout << ">>>>>>增加商品<<<<<<" << endl;
 	int flag = 0,i=0;
 	string obj;
+	cout << "类型：";
 	cin >> obj;
 	for (i = 0; i < 5; i++)
 	{
@@ -16,71 +42,146 @@ void SupermarketManager::add()
 	}
 	if (flag == 1)
 	{
-		switch (i) {
-		case 1:adddrinks(); break;
-		case 2:addpaper(); break;
+		string name;
+		int i = 0, flag = 0;
+		cout << "名称：";
+		cin >> name;
+		double price;
+		cout << "价格：";
+		cin >> price;
+		int id;
+		cout << "id：";
+		cin >> id;
+		for (auto c : com[i])
+		{
+			if (c->getname() == name)
+			{
+				c->num++;
+				flag = 1;
+			}
 		}
+
+		if (flag == 0)
+		{
+			com[i].push_back(new drinks(name, id, price));
+		}
+		cout << "商品添加成功" << endl;
+		if (!ifback())
+			add();
 	}
 	else
 		cout << "没有这种类型" << endl;
 }
 
-void SupermarketManager::adddrinks()
-{
-	string name;
-	int i = 0,flag=0;
-	cout << "名称：";
-	cin >> name;
-	double price;
-	cout << "价格：";
-	cin >> price;
-	int id;
-	cout << "id：";
-	cin >> id;
-	for (auto dr:dri)
-	{
-		if (dr->getname() == name)
-		{
-			dr->addnum();
-			flag = 1;
-		}
-	}
+//void SupermarketManager::adddrinks()
+//{
+//	string name;
+//	int i = 0,flag=0;
+//	cout << "名称：";
+//	cin >> name;
+//	double price;
+//	cout << "价格：";
+//	cin >> price;
+//	int id;
+//	cout << "id：";
+//	cin >> id;
+//	for (auto dr:dri)
+//	{
+//		if (dr->getname() == name)
+//		{
+//			dr->addnum();
+//			flag = 1;
+//		}
+//	}
+//
+//	if (flag == 0)
+//	{
+//		dri.push_back(new drinks(name,id,price));
+//	}
+//	cout << "商品添加成功" << endl;
+//	if (!ifback())
+//		add();
+//}
 
-	if (flag == 0)
-	{
-		dri.push_back(new drinks(name,id,price));
-	}
-}
+//void SupermarketManager::show()
+//{
+//	Sort();
+//	cout << *dri.begin();
+//	for (vector<drinks*>::iterator it = dri.begin()+1; it != dri.end(); it++)
+//		cout<<" , " << *it;
+//}
 
-void SupermarketManager::show()
+void SupermarketManager::del()
 {
-	Sort();
-	cout << *dri.begin();
-	for (vector<drinks*>::iterator it = dri.begin()+1; it != dri.end(); it++)
-		cout<<" , " << *it;
-}
-
-void SupermarketManager::beforedel()
-{
+	cout << ">>>>>>删除商品<<<<<<" << endl;
 	cout << "类型：";
 	string type;
 	int i = 0;
-	while (a[i] != type || i < 5) {
+	cin >> type;
+	while (a[i] != type) {
 		i++;
+		if (i == 5)
+			break;
 	}
 	if (i == 5)
 		cout << "没有这种类型！"<<endl;
 	else
 	{
-		switch (i) {
-		case 1:del(dri); break;
+		int flag = 0;
+		cout << "删除商品和数量（如：王老吉 2）：";
+		string name;
+		int number;
+
+		cin >> name >> number;
+		for (auto ve : com[i])
+		{
+			if (ve->getname() == name && ve->num >= number)
+			{
+				ve->num -= number;
+				flag = 1;
+				if (ve->num == 0)
+				{
+					delete ve;
+					ve = NULL;
+				}
+			}
 		}
+		if (flag == 0)
+			cout << "删除失败！！！" << endl;
+		else
+			cout << "删除成功！！！" << endl;
+		if (ifback())
+			menu();
+		else
+			del();
 		
 	}
 
 }
 
-void SupermarketManager::Sort()
+void SupermarketManager::changeinfor()
 {
-	sort(dri.begin(), dri.end());
+	cout << ">>>>>>修改商品<<<<<" << endl;
+	cout << "名称：";
+	string name;
+	cin >> name;
+
+}
+
+//void SupermarketManager::Sort()
+//{
+//	sort(dri.begin(), dri.end());
+//}
+
+bool SupermarketManager::ifback()
+{
+	cout << "是否返回主菜单（y返回，n退出）：";
+	char in;
+	cin >> in;
+	if (in == 'y')
+		return true;
+	else if (in == 'n')
+		return false;
+	else
+		ifback();		
 }
