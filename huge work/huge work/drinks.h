@@ -1,12 +1,12 @@
 #pragma once
 #include "Commodity.h"
-#include<iostream>
+
 class drinks :
     public Commodity
 {
 public:
-    bool operator<(drinks drink) {
-        if (price < drink.price)
+    bool operator<(Commodity* com) {
+        if (price < *com.getprice()) 
             return true;
         else
             return false;
@@ -18,5 +18,7 @@ public:
     int getnum() { return num; }
     void addnum() { num++; }
     void addname(string name){}
-    friend ostream& operator<<(ostream& out, drinks* dri);
+    void newprice(double newp);
+    void newdescribe(string newd);
+
 };

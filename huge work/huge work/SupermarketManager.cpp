@@ -1,5 +1,12 @@
 #include "SupermarketManager.h"
 using namespace std;
+vector<Commodity*> SupermarketManager::operator[](const string str)
+{
+	int i = 0;
+	for(i=0;i<5;i++)
+		if(a[i]==str)
+			return com[i];
+}
 void SupermarketManager::menu()
 {
 	int num = 1;
@@ -73,35 +80,13 @@ void SupermarketManager::add()
 		cout << "没有这种类型" << endl;
 }
 
-//void SupermarketManager::adddrinks()
-//{
-//	string name;
-//	int i = 0,flag=0;
-//	cout << "名称：";
-//	cin >> name;
-//	double price;
-//	cout << "价格：";
-//	cin >> price;
-//	int id;
-//	cout << "id：";
-//	cin >> id;
-//	for (auto dr:dri)
-//	{
-//		if (dr->getname() == name)
-//		{
-//			dr->addnum();
-//			flag = 1;
-//		}
-//	}
-//
-//	if (flag == 0)
-//	{
-//		dri.push_back(new drinks(name,id,price));
-//	}
-//	cout << "商品添加成功" << endl;
-//	if (!ifback())
-//		add();
-//}
+void SupermarketManager::show(vector<Commodity*> com)
+{
+	cout << *com.begin();
+	for (vector<Commodity*>::iterator it = com.begin()+1; it != com.end(); it++)
+		cout<<" , " << *it;
+}
+
 
 //void SupermarketManager::show()
 //{
@@ -156,7 +141,8 @@ void SupermarketManager::del()
 			del();
 		
 	}
-
+	if (!ifback())
+		del();
 }
 
 void SupermarketManager::changeinfor()
@@ -165,6 +151,131 @@ void SupermarketManager::changeinfor()
 	cout << "名称：";
 	string name;
 	cin >> name;
+	for(int i=0;i<5;i++)
+		for(auto co:com[i])
+			if (co->getname() == name)
+			{
+				cout << " 修改项（1 = 价格，2 = 描述）：";
+				int choice;
+				cin >> choice;
+				if (choice == 1)
+				{
+					cout << "新价格：";
+					double newp;
+					cin >> newp;
+					co->newprice(newp);
+					cout << "价格修改成功" << endl;
+				}
+				else if (choice == 2)
+				{
+					cout << "新描述：";
+					string newd;
+					cin >> newd;
+					co->newdescribe(newd);
+					cout << "描述修改成功" << endl;
+				}
+				else
+					cout << "输入错误" << endl;
+			}
+	if (!ifback())
+		changeinfor();
+}
+
+void SupermarketManager::Search()
+{
+	cout << ">>>>>>商品信息检索<<<<<" << endl;
+	cout << "类型：";
+	string type;
+	int i = 0;
+	cin >> type;
+	for(i=0;i<5;i++)
+		if (a[i] == type)
+		{
+			rSort(com[i]);
+			show(com[i]);
+		}
+	if (i == 5)
+		cout << "不存在此类商品。" << endl;
+	if (!ifback())
+		Search();
+}
+
+void SupermarketManager::SortAndOut()
+{
+	cout << ">>>>>>商品排序输出<<<<<" << endl;
+	cout << "类型：";
+	string type;
+	cin >> type;
+	for (int i = 0; i < 5; i++)
+	{
+		if (a[i] == type)
+		{
+			cout << "排序类型（1=由高到低，2=由低到高）:" << endl;
+			int in;
+			cin >> in;
+			if (in == 1)
+			{
+				rSort(com[i]);
+				cout << *com[i].begin();
+				for (vector<Commodity*>::iterator it = com[i].begin() + 1; it != com[i].end(); it++)
+					cout << " > " << *it;
+			}
+			else if (in == 2)
+			{
+				Sort(com[i]);
+				cout << *com[i].begin();
+				for (vector<Commodity*>::iterator it = com[i].begin() + 1; it != com[i].end(); it++)
+					cout << " < " << *it;
+			}
+			else
+				cout << "错误的输入" << endl;
+		}
+	}
+	if (!ifback())
+		SortAndOut();
+	//cout << ">>>>>>商品排序输出<<<<<" << endl;
+	//cout << "排序类型（1=由高到低，2=由低到高）:";
+	// int in;
+	//cin >> in;
+	//for (int i = 0; i < 5; i++)
+	//{
+	// 	   for(auto co:com[i])
+	//		if (a[i] == type)
+	//			{
+	//				int in;
+	//				cin >> in;
+	//				if (in == 1)
+	//				{
+	//					rSort(com[i]);
+	//					show(com[i]);
+	//				}
+	//		else if (in == 2)
+	//		{
+	//			Sort(com[i]);
+	//			show(com[i]);
+	//		}
+	//		else
+	//			cout << "错误的输入" << endl;
+	//	}
+	//}
+	//if (!ifback())
+	//	SortAndOut();
+}
+
+void SupermarketManager::Sort(vector<Commodity*> com)
+{
+	sort(com.begin(), com.end());
+}
+
+void SupermarketManager::rSort(vector<Commodity*> com)
+{
+	sort(com.rbegin(), com.rend());
+}
+
+void SupermarketManager::PriceNum5()
+{
+	for (int i = 0; i < 5; i++)
+		rSort(com[i]);
 
 }
 

@@ -1,9 +1,16 @@
 #include "drinks.h"
 
-ostream& operator<<(ostream& out, drinks* dri)
-{
 
-    out << "[" << dri->name << "($" << dri->price << "),剩余" << dri->num<<"]";
-    return out;
-    // TODO: 在此处插入 return 语句
+
+void drinks::newprice(double newp)
+{
+    price = newp;
 }
+
+void drinks::newdescribe(string newd)
+{
+    describe = newd;
+}
+
+
+
