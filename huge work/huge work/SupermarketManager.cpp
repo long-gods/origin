@@ -105,29 +105,41 @@ void SupermarketManager::del()
 		if (i == 5)
 			break;
 	}
+	int flag = 0;
 	if (i == 5)
 		cout << "没有这种类型！"<<endl;
 	else
 	{
-		int flag = 0;
-		cout << "删除商品和数量（如：王老吉 2）：";
-		string name;
-		int number;
-
-		cin >> name >> number;
-		for (auto ve : com[i])
+		if (com[i].empty())
+			cout << "商品售光！！" << endl;
+		else
 		{
-			if (ve->getname() == name)
+			show(com[i]);
+			cout << "删除商品和数量（如：王老吉 2）：";
+			string name;
+			int number;
+
+			cin >> name >> number;
+			for (vector<Commodity*>::iterator it = com[i].begin(); it != com[i].end(); it++)
 			{
-				ve->num -= number;
-				flag = 1;
-				if (ve->num <= 0)
+				if ((*it)->getname() == name)
 				{
-					delete ve;
-					ve = NULL;
+					(*it)->num -= number;
+					flag = 1;
+					cout << "删除成功！！！" << endl;
+					if ((*it)->num <= 0)
+					{
+						delete (*it);
+						com[i].erase(it);
+						cout << "数量归零删除对象！！！" << endl;
+						break;
+					}
 				}
-				cout << "删除成功！！！" << endl;
 			}
+		}
+		if(flag==0)
+		{
+			cout << "删除失败！！！" << endl;
 		}
 	}
 	if (!ifback())
