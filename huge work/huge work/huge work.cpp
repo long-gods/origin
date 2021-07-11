@@ -1,14 +1,38 @@
 ﻿// huge work.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
 //
 
-#include <iostream>
-#include"drinks.h"
 #include"SupermarketManager.h"
 
+void menu(SupermarketManager manager)
+{
+	int num1 = 1;
+	while (num1)
+	{
+		cout << "1、新增商品信息" << endl;
+		cout << "2、删除商品信息" << endl;
+		cout << "3、修改商品信息（ps：例如按Id修改价格、描述等）" << endl;
+		cout << "4、商品信息检索" << endl;
+		cout << "5、商品按价格排序输出" << endl;
+		cout << "6、输出价格前五的商品" << endl;
+		cout << "0、退出" << endl;
+		cout << "请选择功能(0 - 6)：";
+		std::cin >> num1;
+		switch (num1) {
+		case 0:break; break;
+		case 1:manager.add(); break;
+		case 2:manager.del(); break;
+		case 3:manager.changeinfor(); break;
+		case 4:manager.Search(); break;
+		case 5:manager.SortAndOut(); break;
+		case 6:manager.PriceNum5(); break;
+		case 7:manager.init(); break;
+		}
+	}
+}
 int main()
 {
     SupermarketManager manager;
-    manager.menu();
+    menu(manager);
     return 0;
 }
 

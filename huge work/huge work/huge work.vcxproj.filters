@@ -27,6 +27,9 @@
     <ClCompile Include="SupermarketManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="papers.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Commodity.h">
@@ -36,6 +39,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="SupermarketManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="papers.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

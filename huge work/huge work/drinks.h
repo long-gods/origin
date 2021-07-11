@@ -5,20 +5,19 @@ class drinks :
     public Commodity
 {
 public:
-    bool operator<(Commodity* com) {
-        if (price < *com.getprice()) 
+    bool operator<(drinks dri) {
+        if (price < dri.getprice())
             return true;
         else
             return false;
     }
-    drinks(string name, int id, double price) { this->name = name; this->id = id; this->price = price; this->num++; }
-    string getname() { return name; }
-    int getid() { return id; }
-    double getprice() { return price; }
-    int getnum() { return num; }
-    void addnum() { num++; }
-    void addname(string name){}
-    void newprice(double newp);
-    void newdescribe(string newd);
-
+    bool operator>(drinks dri) {
+        if (price >dri.getprice())
+            return true;
+        else
+            return false;
+    }
+    drinks() {};
+    drinks(string name, int id, double price,int num=1) { this->name = name; this->id = id; this->price = price; this->num=num; }
+    ~drinks() {};
 };

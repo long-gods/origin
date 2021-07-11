@@ -11,17 +11,19 @@ protected:
 	string describe;
 public:
 	int num=0;
-	virtual bool operator<(Commodity com) = 0;
-	virtual string getname() = 0;
-	virtual int getid() = 0;
-	virtual double getprice()= 0;
-	virtual int getnum() = 0;
-	virtual void newprice(double newp)=0;
-	virtual void newdescribe(string newd) = 0;
+	string getname() { return name; }
+	int getid() { return id; }
+	double getprice() { return price; }
+	int getnum() { return num; }
+	void addnum() { num++; }
+	void addname(string name);
+	void newprice(double newp);
+	void newdescribe(string newd);
 	friend ostream& operator<<(ostream& out, Commodity* com);
+	virtual ~Commodity() = 0;
 };
 
-ostream& operator<<(ostream& out, Commodity* com)
+inline ostream& operator<<(ostream& out, Commodity* com)
 {
 
 	out << "[" << com->getname() << "($" << com->getprice() << "),สฃำเ" << com->getnum() << "]";
