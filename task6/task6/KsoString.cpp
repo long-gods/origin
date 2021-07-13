@@ -14,12 +14,17 @@ int main()
 	//KsoString<wchar_t> str2;
 	KsoString<char> str1("hello");
 	KsoString<wchar_t> str2(L"world");
-	KsoString<char> str3;
+	KsoString<char> str3("world");
 	str1.show();
+	cout << str1.getlength() << endl;
 	cout << str1[0] << endl;
 	str2.show();
+	cout << str2.getlength() << endl;
 	wcout << str2[3] << endl;
+	str3 = str1+str3;
 	str3.show();
+	KsoString<char> str4(str3);
+	str4.show();
 	return 0;
 
 }

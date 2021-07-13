@@ -10,7 +10,7 @@ using namespace std;
 template<class T=char>
 struct node {
 	T data;
-	node* next;
+	node* next=NULL;
 };
 class errorOutRange
 {
@@ -23,6 +23,7 @@ class KsoString
 public:
 	KsoString();
 	KsoString(const T* p);//char* 构造函数
+	KsoString(KsoString<T>& str);
 	int getlength() { return length; }
 	void insert_point(int n, T data);
 	void delete_point(int n, T data);
@@ -46,6 +47,39 @@ public:
 		else
 				cout << "类型不匹配，请检查输入的类型" << endl;
 		cout << endl;
+	}
+	KsoString operator+(KsoString str) {
+		node<T>* p = m_node;
+		while (p->next != NULL)
+		{
+			p = p->next;
+		}
+		p->next = str.m_node;
+		return *this;
+	}
+	KsoString operator=(const KsoString<T>& str) {
+		node<T>* p;
+		m_node->data = str.m_node->data;
+		while (str.m_node->next != NULL)
+		{
+			p = (node<T>*)malloc(sizeof(node<T>));
+			p->data = str.m_node->data;
+			p->next = m_node;
+			m_node->next = p;
+		}
+		length = str.length;
+		return *this;
+	}
+	~KsoString()
+	{
+		node<T>* p;
+		p = m_node;
+		while (p->next != NULL)
+		{
+			m_node = p;
+			p = p->next;
+			free(m_node);
+		}
 	}
 
 private:
@@ -89,6 +123,21 @@ KsoString<T>::KsoString(const T* p)
 	{
 		cout << "类型不匹配，请检查输入的类型" << endl;
 	}
+}
+
+template<class T>
+inline KsoString<T>::KsoString(KsoString<T>& str)
+{
+	m_node = (node<T>*)malloc(sizeof(node<T>));
+	m_node->data = str.m_node->data;
+	node<T>* p=str.m_node;
+	while (p->next != NULL)
+	{
+		m_node->next = (node<T>*)malloc(sizeof(node<T>));
+		m_node->next->data = p->data;
+		p = p->next;
+	}
+	length = str.length;
 }
 
 
