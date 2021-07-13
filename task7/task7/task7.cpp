@@ -2,36 +2,48 @@
 #include <iostream>
 using namespace std;
 
+struct a {
+    int data;
+    int get() {
+        return data;
+    }
+};
 template<typename T>
-class smart {
+class sharepoint {
 private:
     T* _ptr;
     int* _count; //reference counting
 public:
     //构造函数
-    smart(T* ptr = nullptr) :_ptr(ptr) {
+    sharepoint(T* ptr = nullptr) :_ptr(ptr) {
         if (_ptr) {
             _count = new int(1);
         }
         else {
             _count = new int(0);
         }
-        cout << *_count << endl;
     }
 
     //拷贝构造
-    smart(const smart& ptr) {
+    sharepoint(const sharepoint& ptr) {
         if (this != &ptr) {
             this->_ptr = ptr._ptr;
             this->_count = ptr._count;
 
             (*this->_count)++;
         }
-        cout << *_count << endl;
     }
 
     //重载operator=
-    smart operator=(const smart& ptr) {
+    sharepoint operator=(const T* ptr) {
+        if (this->_ptr == ptr._ptr) {
+            return *this;
+        }
+        this->_ptr = _ptr;
+        return *this;
+    }
+    //重载operator=
+    sharepoint operator=(const sharepoint& ptr) {
         if (this->_ptr == ptr._ptr) {
             return *this;
         }
@@ -45,29 +57,25 @@ public:
         this->_ptr = ptr._ptr;
         this->_count = ptr._count;
         (*this->_count)++;
-        cout << *_count << endl;
         return *this;
     }
 
     //operator*重载
-    T& operator*() {
-        if (this->_ptr) {
-            return *(this->_ptr);
-        }
+    T* operator*() {
+            return this->_ptr;
     }
 
     //operator->重载
-    T& operator->() {
-        if (this->_ptr) {
-            return this->_ptr;
-        }
+    T* operator->() {
+            return _ptr;
     }
+    //T& operator->() {
+    //    return _ptr;
+    //}
     //析构函数
-    ~smart() {
+    ~sharepoint() {
         (*this->_count)--;
-        cout << *_count << endl;
         if (*this->_count == 0) {
-            cout << *_count << endl;
             delete this->_ptr;
             delete this->_count;
         }
@@ -78,6 +86,9 @@ public:
         else
             return false;
     }
+    T* get() {
+        return &this->_ptr;
+    }
     //return reference counting
     int use_count() {
         return *this->_count;
@@ -85,9 +96,13 @@ public:
 };
 int main()
 {
-	smart<int> ptr(new int (1));
-	smart<int> ptr1;
+	sharepoint<int> ptr(new int (1));
+	sharepoint<int> ptr1;
 	ptr1 = ptr;
+    cout << *ptr << " " << *ptr1 << endl;
+    a* b;
+    sharepoint<a> ptr3(new a{ 1 });
+    cout << ptr3->get() << endl;
     if (ptr1.isempty())
         cout << "indead" << endl;
 	return 0;

@@ -2,10 +2,23 @@
 //
 
 #include <iostream>
+#include<vector>
+using namespace std;
 
+void exercise(int* b, int* e)
+{
+	vector<int> v(b, e);
+	int* p = new int[v.size()];
+	ifstream in("ints");
+	//此处发生异常
+}
 int main()
 {
-    std::cout << "Hello World!\n";
+	int a = 1, b = 2;
+	try {
+		exercise(&a, &b);
+		if()
+   }
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
