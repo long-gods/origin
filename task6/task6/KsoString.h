@@ -48,7 +48,7 @@ public:
 				cout << "类型不匹配，请检查输入的类型" << endl;
 		cout << endl;
 	}
-	//friend KsoString operator+(const KsoString& str1, const KsoString& str2);
+	//KsoString& operator+(const KsoString& str1, const KsoString& str2);
 	KsoString operator=(const KsoString<T>& str) {
 		m_node = (node<T>*)malloc(sizeof(node<T>));
 		node<T>* n = m_node;
