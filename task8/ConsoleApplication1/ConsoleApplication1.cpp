@@ -1,25 +1,31 @@
-﻿// task8.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
-//
-
+﻿
 #include <iostream>
-#include"KMatrix.h"
-using namespace std;
+#include <vector>
+	using namespace std;
 
-int main()
-{
-    KMatrix<int> matrix;
-    KMatrix<int> matrix1;
-    MyStruct my;
-    matrix1.init(5,5);
-    matrix.initpro(my);
-    matrix.print();
-    matrix.get();
-    //matrix.erase_col(1);
-    //matrix.erase_row(1);
-    //matrix.transpose();
-    matrix.dotMul(matrix1);
-    matrix.print();
-}
+	int main()
+	{
+		vector<vector<int> > vec(4);
+		for (int i = 0; i < 4; i++)
+		{
+			vec[i].resize(5);
+		}
+		//输出二维数组的行和列
+		cout << "row(行)：" << vec.size() << "col(列)：" << vec[0].size() << endl; //输出4和5
+
+		//输出二维vector的所有值
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 5; j++)
+			{
+				cout << vec[i][j];
+			}
+			cout << endl; //打完一行就换行
+		}
+
+		system("pause");
+		return 0;
+	}
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
 // 调试程序: F5 或调试 >“开始调试”菜单
