@@ -21,7 +21,7 @@ int main()
 	str2.show();
 	cout << str2.getlength() << endl;
 	wcout << str2[3] << endl;
-	str3 = str1+str3;
+	str3 = str1;
 	str3.show();
 	KsoString<char> str4(str3);
 	str4.show();
@@ -39,3 +39,17 @@ int main()
 //   4. 使用错误列表窗口查看错误
 //   5. 转到“项目”>“添加新项”以创建新的代码文件，或转到“项目”>“添加现有项”以将现有代码文件添加到项目
 //   6. 将来，若要再次打开此项目，请转到“文件”>“打开”>“项目”并选择 .sln 文件
+//template<class T>
+//KsoString<T> operator+(const KsoString<T>& str1, const KsoString<T>& str2)
+//{
+//	node<T>* p = m_node;
+//	while (p->next != NULL)
+//	{
+//		p = p->next;
+//	}
+//	p->next = str.m_node;
+//	return *this;
+//	}
+//	KsoString<T> kso;
+//	return KsoString();
+//}

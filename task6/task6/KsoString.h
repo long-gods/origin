@@ -48,37 +48,32 @@ public:
 				cout << "类型不匹配，请检查输入的类型" << endl;
 		cout << endl;
 	}
-	KsoString operator+(KsoString str) {
-		node<T>* p = m_node;
+	//friend KsoString operator+(const KsoString& str1, const KsoString& str2);
+	KsoString operator=(const KsoString<T>& str) {
+		m_node = (node<T>*)malloc(sizeof(node<T>));
+		node<T>* n = m_node;
+		node<T>* p = str.m_node;
 		while (p->next != NULL)
 		{
+			n->next = (node<T>*)malloc(sizeof(node<T>));
+			n->data = p->data;
+			n = n->next;
 			p = p->next;
 		}
-		p->next = str.m_node;
-		return *this;
-	}
-	KsoString operator=(const KsoString<T>& str) {
-		node<T>* p;
-		m_node->data = str.m_node->data;
-		while (str.m_node->next != NULL)
-		{
-			p = (node<T>*)malloc(sizeof(node<T>));
-			p->data = str.m_node->data;
-			p->next = m_node;
-			m_node->next = p;
-		}
+		n->next = NULL;
 		length = str.length;
 		return *this;
 	}
 	~KsoString()
 	{
 		node<T>* p;
+		node<T>* n;
 		p = m_node;
 		while (p->next != NULL)
 		{
-			m_node = p;
+			n = p;
 			p = p->next;
-			free(m_node);
+			free(n);
 		}
 	}
 
@@ -129,14 +124,16 @@ template<class T>
 inline KsoString<T>::KsoString(KsoString<T>& str)
 {
 	m_node = (node<T>*)malloc(sizeof(node<T>));
-	m_node->data = str.m_node->data;
+	node<T>* n = m_node;
 	node<T>* p=str.m_node;
 	while (p->next != NULL)
 	{
-		m_node->next = (node<T>*)malloc(sizeof(node<T>));
-		m_node->next->data = p->data;
+		n->next = (node<T>*)malloc(sizeof(node<T>));
+		n->data = p->data;
+		n = n->next;
 		p = p->next;
 	}
+	n->next = NULL;
 	length = str.length;
 }
 
@@ -169,7 +166,7 @@ inline void KsoString<T>::insert_point(int n, T data)
 		p = p->next;
 	}
 	node<T>* insertpoint;
-	insertpoint = (node<T>*)malloc(sizeof(node<T>));
+ 	insertpoint = (node<T>*)malloc(sizeof(node<T>));
 	if (n == 0)
 	{
 		insertpoint->data = data;
