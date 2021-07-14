@@ -102,14 +102,14 @@ KsoString<T>::KsoString(const T* p)
 	//c++需要严格注意类型匹配。
 	if (strcmp(typeid(T).name(), "char") == 0)
 	{
-		this->length = strlen(reinterpret_cast<const char*>(p)) + 1;//字符串长度需要加1 \0
+		this->length = strlen(reinterpret_cast<const char*>(p));//字符串长度需要加1 \0
 		for (int i = 0; i < this->length; i++)
 			insert_point(i, p[i]);
 
 	}
 	else if (strcmp(typeid(T).name(), "wchar_t") == 0)
 	{
-		this->length = wcslen(reinterpret_cast<const wchar_t*>(p)) + 1;
+		this->length = wcslen(reinterpret_cast<const wchar_t*>(p));
 		for (int i = 0; i < this->length; i++)
 			insert_point(i, p[i]);
 
