@@ -12,12 +12,16 @@ int main()
     MyStruct my;
     matrix1.init(5,5);
     matrix.initpro(my);
+    KMatrix<int>::Iterator it = matrix.begin();
+    for(it;it!=matrix.end();it++)
+        cout << *it << endl;
     matrix.print();
     matrix.get();
     //matrix.erase_col(1);
     //matrix.erase_row(1);
     //matrix.transpose();
-    matrix.dotMul(matrix1);
+    //matrix.dotMul(matrix1);
+    matrix = matrix + matrix1;
     matrix.print();
 }
 
