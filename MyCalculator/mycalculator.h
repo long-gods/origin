@@ -13,10 +13,10 @@
 
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class Mycalculator; }
+namespace Ui { class MyCalculator; }
 QT_END_NAMESPACE
 
-class Mycalculator : public QMainWindow
+class MyCalculator : public QMainWindow
 {
     Q_OBJECT
 
@@ -24,7 +24,7 @@ private:
     QLineEdit *lineEdit;//显示框
     QString input; //输入框
 
-    void MYcalculate();
+    void MyCalculate();
 
 private slots://定义槽函数
     void buttonClicked();
@@ -37,6 +37,6 @@ public:
     protected:
         void paintEvent(QPaintEvent *); //重写paintEvent()
 private:
-    Ui::Mycalculator *ui;
+    Ui::MyCalculator *ui;
 };
 #endif // MYCALCULATOR_H

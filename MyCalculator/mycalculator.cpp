@@ -10,12 +10,9 @@ MyCalculator::MyCalculator(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MyCalculator)
 {
-    // 通过样式表给窗口设置背景图
-    // "MyCalculator" 为类名
-    // "../test/test.jpg": 为图片路径，相对于可执行程序的相对路径
-    this->setStyleSheet("MyCalculator{background-image: url(../MyCalculator/background1.png);} ");
 
     ui->setupUi(this);
+
     connect(ui->Button_0,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号0与槽函数
     connect(ui->Button_1,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号1与槽函数
     connect(ui->Button_2,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号2与槽函数
@@ -30,19 +27,19 @@ MyCalculator::MyCalculator(QWidget *parent) :
     connect(ui->Button_sub,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号-与槽函数
     connect(ui->Button_mul,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号*与槽函数
     connect(ui->Button_div,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号/与槽函数
-    connect(ui->Button_backward,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号1/X与槽函数
+//    connect(ui->Button_backward,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号1/X与槽函数
     connect(ui->Button_C,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号C与槽函数
-    connect(ui->Button_CE,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号CE与槽函数
-    connect(ui->Button_XY,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号X^Y与槽函数
+//    connect(ui->Button_CE,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号CE与槽函数
+//    connect(ui->Button_XY,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号X^Y与槽函数
     connect(ui->Button_equal,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号=与槽函数
-    connect(ui->Button_right,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号)与槽函数
-    connect(ui->Button_remain,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号%与槽函数
-    connect(ui->Button_time,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号Time与槽函数
-    connect(ui->Button_left,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号(与槽函数
+//    connect(ui->Button_right,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号)与槽函数
+//    connect(ui->Button_remain,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号%与槽函数
+//    connect(ui->Button_time,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号Time与槽函数
+//    connect(ui->Button_left,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号(与槽函数
     connect(ui->Button_point,SIGNAL(clicked()),this,SLOT(buttonClicked()));//信号.与槽函数
 
     QPalette palette;
-    palette.setColor(QPalette::Text,Qt::red);//设置字体颜色
+    palette.setColor(QPalette::Text,Qt::black);//设置字体颜色
     ui->lineEdit->setFont(QFont("Timers",20,QFont::Bold));//设置字体大小
     ui->lineEdit->setPalette(palette);
 
@@ -73,12 +70,12 @@ void MyCalculator::buttonClicked()//按钮触动槽函数
     QString text = tb->text();//text:获取或设置文本框的文本内容。
 
 
-     if(text == QString("CE"))
-    {
-        text = input.left(input.length()-1); //减去一字符
-        lineEdit->setText(text);
-    }
-     else if(text == QString("C"))//清空所有
+//     if(text == QString("CE"))
+//    {
+//        text = input.left(input.length()-1); //减去一字符
+//        lineEdit->setText(text);
+//    }
+    if(text == QString("C"))//清空所有
     {
         input="";
         lineEdit->setText(input);
@@ -98,25 +95,25 @@ void MyCalculator::buttonClicked()//按钮触动槽函数
          }
          lineEdit->setText(text);
       }
-      else if(text == QString("1/X"))
-     {
-         if(input != "")
-             lineEdit->setText("1/"+input);
-         else
-         {
-             lineEdit->setText("divisor can't be 0");
-         }
-     }
-     else if(text == QString("X^Y"))
-    {
-        if(input != "")
-            lineEdit->setText(input+"^");
-    }
-     else if(text == QString("Time"))
-     {
-         text=QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm"); //格式化输出当前时间
-         lineEdit->setText(text);
-     }
+//      else if(text == QString("1/X"))
+//     {
+//         if(input != "")
+//             lineEdit->setText("1/"+input);
+//         else
+//         {
+//             lineEdit->setText("divisor can't be 0");
+//         }
+//     }
+//     else if(text == QString("X^Y"))
+//    {
+//        if(input != "")
+//            lineEdit->setText(input+"^");
+//    }
+//     else if(text == QString("Time"))
+//     {
+//         text=QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm"); //格式化输出当前时间
+//         lineEdit->setText(text);
+//     }
      else if(text == QString("="))
     {
             std::string str=input.toStdString();//QString转化为String
@@ -136,7 +133,7 @@ void MyCalculator::buttonClicked()//按钮触动槽函数
             else
             {
                 change=QString::number(result,10,6);//将计算结果转换为字符串
-                lineEdit->setText(change);
+                lineEdit->setText(input+"="+change);
             }
     }
       else//+ - * / % 0-9
