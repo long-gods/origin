@@ -4,13 +4,18 @@
 #include <QMainWindow>
 #include<QWidget>
 #include<QWizard>
+#include<QDir>
 
 QT_BEGIN_NAMESPACE
 class QCheckBox;
 class QGroupBox;
+class QComboBox;
 class QLabel;
 class QLineEdit;
 class QRadioButton;
+class QDir;
+class QProgressBar;
+class QTableWidget;
 QT_END_NAMESPACE
 
 
@@ -53,6 +58,16 @@ public:
 private:
     QGroupBox *Group;
     QGroupBox *Group1;
+    QComboBox *directoryComboBox;
+    QPushButton *findButton;
+    QComboBox *fileComboBox;
+    QComboBox *textComboBox;
+    QLabel *filesFoundLabel;
+
+    QComboBox *createComboBox(const QString &text = QString());
+private slots:
+    void findpath();
+    void animateFindClick();
 };
 //! [4]
 
@@ -64,12 +79,21 @@ class EvaluatePage : public QWizardPage
 public:
     EvaluatePage(QWidget *parent = 0);
     int nextId() const override;
+    void findfile();
 
 private:
-    QLabel *nameLabel;
-    QLabel *emailLabel;
-    QLineEdit *nameLineEdit;
-    QLineEdit *emailLineEdit;
+    QProgressBar *m_pLeftToRightProBar;
+    QComboBox *fileComboBox;
+    QComboBox *textComboBox;
+    QComboBox *directoryComboBox;
+    QLabel *filesFoundLabel;
+    QPushButton *findButton;
+    QTableWidget *filesTable;
+
+    QDir Dir;
+
+    QFileInfoList findFiles(const QString path);
+    void showFiles(const QStringList &files);
 };
 //! [5]
 

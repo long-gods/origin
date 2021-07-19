@@ -10,6 +10,7 @@
 
 #include "mainwindow.h"
 
+static  QString path;
 
 MainWindow::MainWindow(QWizard *parent)
     : QWizard(parent)
@@ -17,9 +18,8 @@ MainWindow::MainWindow(QWizard *parent)
     //! [0]
         setPage(Page_Conclusion, new ConclusionPage);
         setPage(Page_Intro, new IntroPage);
-    //    setPage(Page_Evaluate, new EvaluatePage);
-    //    setPage(Page_Register, new RegisterPage);
-    //    setPage(Page_Details, new DetailsPage);
+        setPage(Page_Evaluate, new EvaluatePage);
+        setPage(Page_Register, new RegisterPage);
 
 
     //! [1]
@@ -78,9 +78,9 @@ IntroPage::IntroPage(QWidget *parent)
     QRadioButton *radio1 = new QRadioButton(tr("当前用户 "));
     QRadioButton *radio2 = new QRadioButton(tr("所有用户 "));
     radio1->setChecked(true);
-    QVBoxLayout *vbox = new QVBoxLayout;
-    vbox->addWidget(radio1,0,0);
-    vbox->addWidget(radio2,0,0);
+    QHBoxLayout *vbox = new QHBoxLayout;
+    vbox->addWidget(radio1);
+    vbox->addWidget(radio2);
     Group->setLayout(vbox);
     Group->resize(300,30);
     QVBoxLayout *layout = new QVBoxLayout;
@@ -91,16 +91,24 @@ IntroPage::IntroPage(QWidget *parent)
     QCheckBox *check3 = new QCheckBox(tr("当前用户 "));
     QCheckBox *check4 = new QCheckBox(tr("所有用户 "));
     radio1->setChecked(true);
-    QVBoxLayout *vbox1 = new QVBoxLayout;
-    vbox1->addWidget(check1);
-    vbox1->addWidget(check2);
-    vbox1->addWidget(check3);
-    vbox1->addWidget(check4);
+    QGridLayout *vbox1 = new QGridLayout;
+    vbox1->addWidget(check1,0,0);
+
+    vbox1->addWidget(check2,1,0);
+    vbox1->addWidget(check3,0,1);
+    vbox1->addWidget(check4,1,1);
 
 
-    QLineEdit *le=new QLineEdit("");
+    directoryComboBox = createComboBox(QDir::toNativeSeparators(QDir::currentPath()));
+    connect(directoryComboBox->lineEdit(), &QLineEdit::returnPressed,
+            this,&IntroPage::animateFindClick);
     QPushButton *push=new QPushButton("安装位置");
-    vbox1->addWidget(le);
+
+    connect(push,&QAbstractButton::clicked,this,&findpath);
+
+    registerField("evaluate.path*", directoryComboBox);
+
+    vbox1->addWidget(directoryComboBox);
     vbox1->addWidget(push);
 
     Group->setLayout(vbox);
@@ -112,14 +120,37 @@ IntroPage::IntroPage(QWidget *parent)
     setLayout(layout);
 }
 
+QComboBox *IntroPage::createComboBox(const QString &text)
+{
+    QComboBox *comboBox = new QComboBox;
+    comboBox->setEditable(true);
+    comboBox->addItem(text);
+    comboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    return comboBox;
+}
+
+void IntroPage::animateFindClick()
+{
+    findButton->animateClick();
+}
+
+void IntroPage::findpath()
+{
+    QString directory =
+        QDir::toNativeSeparators(QFileDialog::getExistingDirectory(this, tr("Find Files"), QDir::currentPath()));
+
+    if (!directory.isEmpty()) {
+        if (directoryComboBox->findText(directory) == -1)
+            directoryComboBox->addItem(directory);
+        directoryComboBox->setCurrentIndex(directoryComboBox->findText(directory));
+    }
+    path=directoryComboBox->findText(directory);
+}
+
 int IntroPage::nextId() const
 //! [17] //! [19]
 {
-    if (Group1->isChecked()) {
         return MainWindow::Page_Evaluate;
-    } else {
-        return MainWindow::Page_Register;
-    }
 }
 //! [18] //! [19]
 
@@ -128,20 +159,41 @@ EvaluatePage::EvaluatePage(QWidget *parent)
     : QWizardPage(parent)
 {
 
-
+    m_pLeftToRightProBar = new QProgressBar(this);
+    m_pLeftToRightProBar->setOrientation(Qt::Horizontal);  // 水平方向
+    m_pLeftToRightProBar->setMinimum(0);  // 最小值
+    m_pLeftToRightProBar->setMaximum(100);  // 最大值
+    m_pLeftToRightProBar->setValue(50);  // 当前进度
 //! [21]
-
+    filesTable=new QTableWidget;
     QGridLayout *layout = new QGridLayout;
-    layout->addWidget(nameLabel, 0, 0);
-    layout->addWidget(nameLineEdit, 0, 1);
-    layout->addWidget(emailLabel, 1, 0);
-    layout->addWidget(emailLineEdit, 1, 1);
+    layout->addWidget(new QLabel(tr("安装进度:")), 0, 0);
+    layout->addWidget(m_pLeftToRightProBar,0,1);
+    layout->addWidget(new QLabel(tr("安装列表：")),1,0);
+    layout->addWidget(filesTable, 2, 0, 1, 2);
     setLayout(layout);
+    QFileInfoList li;
+    li=findFiles(path);
+
 //! [22]
 }
-//! [22]
 
-//! [23]
+QFileInfoList EvaluatePage::findFiles(const QString path)
+{
+    QDir dir(path);
+        QFileInfoList file_list = dir.entryInfoList(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
+        QFileInfoList folder_list = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+
+        for(int i = 0; i != folder_list.size(); i++)
+        {
+             QString name = folder_list.at(i).absoluteFilePath();
+             QFileInfoList child_file_list = findFiles(name);
+             file_list.append(child_file_list);
+        }
+
+        return file_list;
+}
+
 int EvaluatePage::nextId() const
 {
     return MainWindow::Page_Conclusion;
