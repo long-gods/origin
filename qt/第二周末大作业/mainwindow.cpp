@@ -12,29 +12,25 @@
 
 static  QString path;
 
-MainWindow::MainWindow(QWizard *parent)
+MainWindow::MainWindow(QWidget *parent)
     : QWizard(parent)
 {
-    //! [0]
-        setPage(Page_Conclusion, new ConclusionPage);
-        setPage(Page_Intro, new IntroPage);
-        setPage(Page_Evaluate, new EvaluatePage);
-        setPage(Page_Register, new RegisterPage);
+        ConclusionPage *page1=new ConclusionPage();
+        IntroPage *page2=new IntroPage();
+        EvaluatePage *page3=new EvaluatePage();
+        RegisterPage *page4=new RegisterPage();
+
+        setPage(Page_Conclusion, page1);
+        setPage(Page_Intro,page2);
+        setPage(Page_Evaluate,page3);
+        setPage(Page_Register, page4);
 
 
-    //! [1]
-
+        connect(page2,&IntroPage::send,page3,&EvaluatePage::getstr);
         setStartId(Page_Conclusion);
-    //! [2]
 
-    //! [3]
-    #ifndef Q_OS_MAC
-    //! [3] //! [4]
-        //setWizardStyle(ModernStyle);
-    #endif
-    //! [4] //! [5]
         setOption(HaveHelpButton, true);
-    //! [5] //! [6]
+
         setWindowTitle(tr("界面安装"));
         resize(600,400);
 }
@@ -138,23 +134,25 @@ void IntroPage::findpath()
 {
     QString directory =
         QDir::toNativeSeparators(QFileDialog::getExistingDirectory(this, tr("Find Files"), QDir::currentPath()));
-
+    qDebug()<<directory;
+    this->filepath=directory;
+    qDebug()<<this->filepath;
+    emit send(this->filepath);
     if (!directory.isEmpty()) {
         if (directoryComboBox->findText(directory) == -1)
             directoryComboBox->addItem(directory);
         directoryComboBox->setCurrentIndex(directoryComboBox->findText(directory));
     }
-    path=directoryComboBox->findText(directory);
 }
 
 int IntroPage::nextId() const
-//! [17] //! [19]
+
 {
         return MainWindow::Page_Evaluate;
 }
-//! [18] //! [19]
 
-//! [20]
+
+
 EvaluatePage::EvaluatePage(QWidget *parent)
     : QWizardPage(parent)
 {
@@ -165,65 +163,112 @@ EvaluatePage::EvaluatePage(QWidget *parent)
     m_pLeftToRightProBar->setMaximum(100);  // 最大值
     m_pLeftToRightProBar->setValue(50);  // 当前进度
 //! [21]
-    filesTable=new QTableWidget;
+    list=new QListWidget;
     QGridLayout *layout = new QGridLayout;
     layout->addWidget(new QLabel(tr("安装进度:")), 0, 0);
     layout->addWidget(m_pLeftToRightProBar,0,1);
     layout->addWidget(new QLabel(tr("安装列表：")),1,0);
-    layout->addWidget(filesTable, 2, 0, 1, 2);
+    layout->addWidget(list, 2, 0, 1, 2);
     setLayout(layout);
     QFileInfoList li;
-    li=findFiles(path);
+    li=findFiles(this->filepath);
 
 //! [22]
 }
 
+void EvaluatePage::getstr(QString str)
+{
+    this->filepath=str;
+}
 QFileInfoList EvaluatePage::findFiles(const QString path)
 {
     QDir dir(path);
-        QFileInfoList file_list = dir.entryInfoList(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
-        QFileInfoList folder_list = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
-
-        for(int i = 0; i != folder_list.size(); i++)
+    if (!dir.exists())
+    dir.setFilter(QDir::Dirs|QDir::Files);
+    dir.setSorting(QDir::DirsFirst);
+    QFileInfoList lists = dir.entryInfoList();
+    QStringList infolist = dir.entryList(QDir::Files | QDir::NoDotAndDotDot);
+    //QList<QFileInfo> *fileInfo=new QList<QFileInfo>(dir.entryInfoList(infolist));
+    int i = 0;
+    do{
+        QFileInfo fileInfo = lists.at(i);
+        if(fileInfo.fileName()=="."|fileInfo.fileName()=="..")
         {
-             QString name = folder_list.at(i).absoluteFilePath();
-             QFileInfoList child_file_list = findFiles(name);
-             file_list.append(child_file_list);
+            i++;
+            continue;
         }
-
-        return file_list;
+        bool bisDir = fileInfo.isDir();
+        if(bisDir)
+        {
+            findFiles(fileInfo.filePath());
+        }
+        else
+        {
+            //这里就是你想要对文件的操作了
+            for(int m = 0; m <infolist.size(); m++)
+            {
+                num++;
+                //这里是获取当前要处理的文件名
+                QString filename = infolist.at(m);
+                QString filepath=fileInfo.absoluteFilePath();
+                list->addItem(filepath+filename);
+                m_pLeftToRightProBar->setValue(num);
+                Sleep(1);
+            }
+            break;//这里一定要break退出while循环，因为infolist中的文件访问完之后，当前文件夹下已经没有任何文件了，这里是递归的返回
+        }
+        i++;
+    }while(i < lists.size());//这里是list.size()，也就是当前文件夹下的文件夹数和文件数的和再+2
+        return lists;
 }
 
 int EvaluatePage::nextId() const
 {
-    return MainWindow::Page_Conclusion;
+    return MainWindow::Page_Register;
 }
 //! [23]
 
 RegisterPage::RegisterPage(QWidget *parent)
     : QWizardPage(parent)
 {
-    setTitle(tr("Register Your Copy of <i>Super Product One</i>&trade;"));
-    setSubTitle(tr("If you have an upgrade key, please fill in "
-                   "the appropriate field."));
+    grid = new QGridLayout();
+    QLabel *label=new QLabel(tr("激活方式："));
+    QPalette palette;
+    palette.setColor(QPalette::Background, QColor(255, 255, 255));
+    label->setAutoFillBackground(true);
+    label->setPalette(palette);
 
-    nameLabel = new QLabel(tr("N&ame:"));
+    QComboBox *echoComboBox = new QComboBox;
+    echoComboBox->addItem(tr("License key"));
+    echoComboBox->addItem(tr("Password"));
+
+    QPushButton *button=new QPushButton();
+    button->setText("激活 ");
+
+    QFrame *line = new QFrame();
+    line->setFrameShape(QFrame::HLine);
+
+    QCheckBox *checkBox = new QCheckBox(tr("跳过"));
+    checkBox->setChecked(false);
+
+    connect(echoComboBox, SIGNAL(activated(int)),
+            this, SLOT(echoChanged(int)));
+    nameLabel = new QLabel();
+    pwdLabel = new QLabel();
+    echoLineEdit = new QLineEdit;
     nameLineEdit = new QLineEdit;
-    nameLabel->setBuddy(nameLineEdit);
+    echoLineEdit->setFocus();
+    grid->addWidget(nameLabel,1,0);
+    grid->addWidget(echoLineEdit,2,0,1,4);
+    echoLineEdit->setInputMask(">#####-#####-#####-#####-#####;#");
 
-    upgradeKeyLabel = new QLabel(tr("&Upgrade key:"));
-    upgradeKeyLineEdit = new QLineEdit;
-    upgradeKeyLabel->setBuddy(upgradeKeyLineEdit);
+    grid->addWidget(label,0,0);
+    grid->addWidget(echoComboBox,0,2,1,2);
+    grid->addWidget(button,3,0,1,1);
+    grid->addWidget(line,4,0,1,4);
+    grid->addWidget(checkBox,5,3);
 
-    registerField("register.name*", nameLineEdit);
-    registerField("register.upgradeKey", upgradeKeyLineEdit);
-
-    QGridLayout *layout = new QGridLayout;
-    layout->addWidget(nameLabel, 0, 0);
-    layout->addWidget(nameLineEdit, 0, 1);
-    layout->addWidget(upgradeKeyLabel, 1, 0);
-    layout->addWidget(upgradeKeyLineEdit, 1, 1);
-    setLayout(layout);
+    setLayout(grid);
 }
 
 

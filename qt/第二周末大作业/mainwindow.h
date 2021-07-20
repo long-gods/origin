@@ -16,6 +16,8 @@ class QRadioButton;
 class QDir;
 class QProgressBar;
 class QTableWidget;
+class QListWidget;
+class QGridLayout;
 QT_END_NAMESPACE
 
 
@@ -24,7 +26,7 @@ class MainWindow : public QWizard
     Q_OBJECT
 
 public:
-    MainWindow(QWizard *parent = nullptr);
+    MainWindow(QWidget *parent = nullptr);
     enum {Page_Conclusion , Page_Intro, Page_Evaluate, Page_Register, Page_Details,
            };
     ~MainWindow();
@@ -63,11 +65,14 @@ private:
     QComboBox *fileComboBox;
     QComboBox *textComboBox;
     QLabel *filesFoundLabel;
+    QString filepath;
 
     QComboBox *createComboBox(const QString &text = QString());
 private slots:
     void findpath();
     void animateFindClick();
+signals:
+    void send(QString str);
 };
 //! [4]
 
@@ -80,20 +85,19 @@ public:
     EvaluatePage(QWidget *parent = 0);
     int nextId() const override;
     void findfile();
+    int num=0;
 
 private:
     QProgressBar *m_pLeftToRightProBar;
-    QComboBox *fileComboBox;
-    QComboBox *textComboBox;
-    QComboBox *directoryComboBox;
-    QLabel *filesFoundLabel;
-    QPushButton *findButton;
-    QTableWidget *filesTable;
-
+    QString filepath;
+    QListWidget *list;
     QDir Dir;
 
     QFileInfoList findFiles(const QString path);
     void showFiles(const QStringList &files);
+public slots:
+    void getstr(QString str);
+
 };
 //! [5]
 
@@ -105,28 +109,14 @@ public:
     RegisterPage(QWidget *parent = 0);
 
 private:
-    QLabel *nameLabel;
-    QLabel *upgradeKeyLabel;
-    QLineEdit *nameLineEdit;
-    QLineEdit *upgradeKeyLineEdit;
+    QLabel *nameLabel=nullptr;
+    QLabel *pwdLabel=nullptr;
+    QGridLayout *grid;
+    QLineEdit* echoLineEdit=nullptr;
+    QLineEdit* nameLineEdit=nullptr;
 };
 
-class DetailsPage : public QWizardPage
-{
-    Q_OBJECT
 
-public:
-    DetailsPage(QWidget *parent = 0);
-
-
-private:
-    QLabel *companyLabel;
-    QLabel *emailLabel;
-    QLabel *postalLabel;
-    QLineEdit *companyLineEdit;
-    QLineEdit *emailLineEdit;
-    QLineEdit *postalLineEdit;
-};
 
 //! [6]
 
