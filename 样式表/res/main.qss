@@ -1,0 +1,28 @@
+
+
+QWidget{
+background-color:transparent;
+}
+
+
+
+QPushButton#clostBtn
+{
+  border-image:url(:/res/image/close-normal.png);
+   border-width:0px 0px 0px 0px;
+   background-repeat:none;
+   background-origin: content;
+}
+
+QPushButton#clostBtn:hover
+{
+  border-image:url(:/res/image/close-hover.png);
+}
+
+QPushButton#pushButton_2
+{
+  background-color: rgb(85, 170, 255);
+  border:2px groove gray;
+  border-radius:10px;
+  padding:2px 4px;
+}
