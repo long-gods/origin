@@ -44,15 +44,9 @@ void server::ReadData()
                 ui->textEdit->append(IP_Port);
 
             ui->textEdit->append(buffer);
-            QString clientIP = ui->comboBox->currentText().split(":")[0];
-            int clientPort = ui->comboBox->currentText().split(":")[1].toInt();
             for(int i=0; i<tcpClient.length(); i++)
             {
-                if(tcpClient[i]->peerAddress().toString().split("::ffff:")[1]!=clientIP && tcpClient[i]->peerPort()==clientPort)
-                {
                     tcpClient[i]->write(IP_Port.toLatin1()+buffer);
-                    return; //ip:port唯一，无需继续检索
-                }
             }
             }
             //更新ip_port

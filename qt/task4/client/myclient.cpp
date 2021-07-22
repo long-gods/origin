@@ -1,11 +1,12 @@
 #include "myclient.h"
 #include "ui_myclient.h"
-
+#include"QDateTime"
 Myclient::Myclient(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::Myclient)
 {
     ui->setupUi(this);
+    ui->textEdit->setReadOnly(true);
     tcpClient=new QTcpSocket(this);
     tcpClient->abort();
     connect(tcpClient,SIGNAL(readyRead()),this,SLOT(ReadData()));
@@ -34,15 +35,18 @@ void Myclient::on_pushButton_3_clicked()
 void Myclient::ReadData()
 {
     QByteArray buffer = tcpClient->readAll();
+    QString buf=buffer;
     if(!buffer.isEmpty())
     {
-        ui->textEdit->append(buffer);
+        ui->textEdit->append(buf);
     }
 }
 
 void Myclient::on_pushButton_clicked()
 {
     QString str=ui->textEdit_2->toPlainText();
+    QDateTime current_date_time =QDateTime::currentDateTime();
+    QString current_date =current_date_time.toString("yyyy.MM.dd hh:mm:ss.zzz ddd");
     if(str!="")
-        tcpClient->write(str.toLatin1());
+        tcpClient->write((current_date+" "+str).toLatin1());
 }
