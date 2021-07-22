@@ -3,6 +3,8 @@
 #include<QByteArray>
 #include<QDebug>
 #include"QDateTime"
+
+QString path="C:\\Users\\wps\\source\\repos\\chenjianglong\\qt\\task3\\log.txt";
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -17,7 +19,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
-    KMyLogHandler file("C:\\Users\\wps\\source\\repos\\chenjianglong\\qt\\task3\\log.txt");
+    KMyLogHandler file(path);
     file.open();
     QByteArray before=file.bread();
     file.open();
@@ -34,7 +36,7 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_pushButton_2_clicked()
 {
-    KMyLogHandler file("C:\\Users\\wps\\source\\repos\\chenjianglong\\qt\\task3\\log.txt");
+    KMyLogHandler file(path);
     file.open();
     std::string before=file.tread();
     file.open();
