@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-   qDebug()<< m_watch.addPath("C:\\Users\\cjl\\source\\repos\\qt\\task3\\log.txt");
+   qDebug()<< m_watch.addPath("C:\\Users\\wps\\source\\repos\\chenjianglong\\qt\\task3\\log.txt");
      connect(&m_watch, SIGNAL(fileChanged(QString)), this, SLOT(fileUpdated()));
 }
 
@@ -23,7 +23,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::fileUpdated()
 {
-    QFile file("C:\\Users\\cjl\\source\\repos\\qt\\task3\\log.txt");
+    QFile file("C:\\Users\\wps\\source\\repos\\chenjianglong\\qt\\task3\\log.txt");
     qDebug()<<file.open(QIODevice::ReadOnly);
     QString str=file.readAll();
     qDebug()<<str;

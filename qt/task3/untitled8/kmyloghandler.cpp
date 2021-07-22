@@ -29,6 +29,7 @@ std::string KMyLogHandler::tread()
 }
 void KMyLogHandler::twrite(std::string str)
 {
+    file.resize(0);
     file.write(str.data());
 }
 
