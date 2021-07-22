@@ -1,0 +1,22 @@
+
+QDialog{
+    background-color: gainsboro;
+    background-repeat: no-repeat
+}
+
+
+
+QPushButton#clostBtn
+{
+  border-image:url(:/res/image/close-normal.png);
+   border-width:0px 0px 0px 0px;
+   background-repeat:none;
+   background-origin: content;
+}
+
+QPushButton#clostBtn:hover
+{
+  border-image:url(:/res/image/close-hover.png);
+}
+
+

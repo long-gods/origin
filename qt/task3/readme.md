@@ -1,0 +1,3 @@
+untitiled4监视文件log有改变就输出
+
+untitled8封装KMylog写入文件

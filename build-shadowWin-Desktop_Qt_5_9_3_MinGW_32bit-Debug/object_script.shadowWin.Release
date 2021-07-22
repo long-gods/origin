@@ -1,0 +1,12 @@
+INPUT(
+./release\chi.o
+./release\form.o
+./release\main.o
+./release\dialog.o
+./release\titlebar.o
+./release\qrc_rc.o
+./release\moc_chi.o
+./release\moc_dialog.o
+./release\moc_form.o
+./release\moc_titlebar.o
+);
