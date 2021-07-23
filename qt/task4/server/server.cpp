@@ -1,6 +1,8 @@
 #include "server.h"
 #include "ui_server.h"
-
+#include<QJsonObject>
+#include<QJsonArray>
+#include<QJsonDocument>
 server::server(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::server)
@@ -33,6 +35,8 @@ void server::ReadData()
         for(int i=0; i<tcpClient.length(); i++)
         {
             QByteArray buffer = tcpClient[i]->readAll();
+            QJsonArray text;
+            QString buf(buffer);
             if(buffer.isEmpty())    continue;
 
             static QString IP_Port, IP_Port_Pre;
@@ -43,10 +47,15 @@ void server::ReadData()
             if(IP_Port != IP_Port_Pre)
                 ui->textEdit->append(IP_Port);
 
-            ui->textEdit->append(buffer);
+            ui->textEdit->append(buf);
+            text.append(IP_Port+" "+buf);
+
+            QJsonDocument document;
+            document.setArray(text);
+            QByteArray byteArray = document.toJson(QJsonDocument::Compact);
             for(int i=0; i<tcpClient.length(); i++)
             {
-                    tcpClient[i]->write(IP_Port.toLatin1()+buffer);
+                    tcpClient[i]->write(byteArray);
             }
             }
             //更新ip_port

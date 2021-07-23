@@ -1,6 +1,8 @@
 #include "myclient.h"
 #include "ui_myclient.h"
 #include"QDateTime"
+#include<QJsonArray>
+#include<QJsonDocument>
 Myclient::Myclient(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::Myclient)
@@ -47,6 +49,14 @@ void Myclient::on_pushButton_clicked()
     QString str=ui->textEdit_2->toPlainText();
     QDateTime current_date_time =QDateTime::currentDateTime();
     QString current_date =current_date_time.toString("yyyy.MM.dd hh:mm:ss.zzz ddd");
+    QJsonArray text;
+    text.append(current_date);
+    text.append(str);
+
+    QJsonDocument Document;
+    Document.setArray(text);
+    QByteArray ByteArray=Document.toJson(QJsonDocument::Compact);
     if(str!="")
-        tcpClient->write((current_date+" "+str).toLatin1());
+        tcpClient->write(ByteArray);
+    ui->textEdit_2->setText("");
 }
