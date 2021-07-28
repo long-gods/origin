@@ -268,7 +268,7 @@ QString CNLHelper::CNToEL(const QString &cnstr)
         //若是字母或数字则直接输出
         ushort vChar = cnstr.at(i).unicode() ;
         if((vChar >= 'a' && vChar <= 'z' ) || (vChar >= 'A' && vChar <= 'Z')) {
-            str.append(cnstr.at(i).toLower());
+            str.append(cnstr.at(i));
         }
 
         if((vChar >= '0' && vChar <= '9')) {
@@ -280,7 +280,7 @@ QString CNLHelper::CNToEL(const QString &cnstr)
             }
         }
     }
-
+    str=str.toLower();
     return str;
 }
 

@@ -171,7 +171,6 @@ else
         if(fileinfolist.at(i).fileName().contains(QRegExp("[\\x4e00-\\x9fa5]+")))
         {
             filename=CNLHelper::Instance()->CNToEL(fileinfolist.at(i).fileName());
-            qDebug()<<filename;
             for(int k=0;k<name.length();k++)
                 for(int l=0;l<filename.length();l++)
                    {
@@ -195,9 +194,7 @@ else
                     }
                 }
         }
-                qDebug()<<m;
         m/=filename.length();
-        qDebug()<<m;
         if(m!=0)
         {
             if(check.empty())

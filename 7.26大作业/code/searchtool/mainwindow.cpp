@@ -119,8 +119,11 @@ else if(b)
             for(int k=0;k<name.length();k++)
                 for(int l=0;l<filename.length();l++)
                    {
-                    if(name[0]==filename[l])
-                        m++;
+                    if(name[k]==filename[l])
+                    {
+                       m++;
+                       break;
+                    }
                 }
             if(m!=0)
             {
@@ -168,11 +171,15 @@ else
         if(fileinfolist.at(i).fileName().contains(QRegExp("[\\x4e00-\\x9fa5]+")))
         {
             filename=CNLHelper::Instance()->CNToEL(fileinfolist.at(i).fileName());
+            qDebug()<<filename;
             for(int k=0;k<name.length();k++)
                 for(int l=0;l<filename.length();l++)
                    {
-                    if(name[0]==filename[l])
+                    if(name[k]==filename[l])
+                    {
                         m++;
+                        break;
+                    }
                 }
         }
         else
@@ -181,14 +188,18 @@ else
             for(int k=0;k<name.length();k++)
                 for(int l=0;l<filename.length();l++)
                    {
-                    if(name[0]==filename[l])
+                    if(name[k]==filename[l])
+                    {
                         m++;
+                        break;
+                    }
                 }
         }
+                qDebug()<<m;
         m/=filename.length();
+        qDebug()<<m;
         if(m!=0)
         {
-            double m=m/filename.length();
             if(check.empty())
             {
                 insertrow(i,0,fileinfolist);
