@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
-
+LIBS += -l User32
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = searchtool

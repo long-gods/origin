@@ -2,39 +2,71 @@
 #include "ui_mainwindow.h"
 #include<QTableWidget>
 #include<QFile>
-#include<QDir>
+#include<QFileDialog>
 #include<QFileIconProvider>
 #include<QString>
 #include<QDateTime>
 #include<vector>
 #include"cnlhelper.h"
 #include<QDebug>
-QString path="C:\\Users\\wps\\Desktop";
+#include<QDesktopServices>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    RegisterHotKey(HWND(winId()),0,MOD_ALT,VK_SPACE);
     ui->tableWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+    watch=new QFileSystemWatcher;
+    watch->addPath(path);
     pop=new QMenu(ui->tableWidget);
     action=new QAction("打开",this);
+    action2=new QAction("删除",this);
     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     QDir fileDir(path);
     QFileInfoList fileinfolist=fileDir.entryInfoList();
-    QFileIconProvider icon_provider;
+//    QFileIconProvider icon_provider;
     for(int i=0;i<fileinfolist.count();i++)
     {
-        insertrow(i,i);
+        insertrow(i,i,fileinfolist);
     }
     connect(ui->lineEdit,SIGNAL(textChanged(QString)),this,SLOT(search(QString)));
-
+    connect(this->watch,SIGNAL(directoryChanged(QString)),this,SLOT(filesearch(QString)));
+    connect(action,SIGNAL(triggered(bool)),this,SLOT(start()));
+    connect(action2,SIGNAL(triggered(bool)),this,SLOT(del()));
 }
 
-void MainWindow::insertrow(int i,int j)
+bool MainWindow::nativeEvent(const QByteArray &eventType, void *message, long *result)
 {
-    QDir fileDir(path);
-    QFileInfoList fileinfolist=fileDir.entryInfoList();
+    Q_UNUSED(eventType);
+    Q_UNUSED(result);
+    MSG* msg= static_cast<MSG*>(message);
+    if(msg->message==WM_HOTKEY)
+    {
+        switch (msg->wParam) {
+                case 0:
+                    check=!check;
+                    break;
+                default:
+                    qDebug() << "被注入了其他热键.";
+                }
+        if(check)
+            this->show();
+        else
+            this->hide();
+        return true;
+    }
+    return false;
+}
+
+void MainWindow::filesearch(QString path)
+{
+    search(ui->lineEdit->displayText());
+}
+
+void MainWindow::insertrow(int i,int j,QFileInfoList fileinfolist)
+{
     QFileIconProvider icon_provider;
     ui->tableWidget->insertRow(j); //插入新行
     QTableWidgetItem *item = new QTableWidgetItem();
@@ -71,7 +103,7 @@ if(name=="")
 {
     for(int i=0;i<fileinfolist.count();i++)
     {
-        insertrow(i,i);
+        insertrow(i,i,fileinfolist);
     }
 }
 else if(b)
@@ -95,7 +127,7 @@ else if(b)
                 double m=m/filename.length();
                 if(check.empty())
                 {
-                    insertrow(i,0);
+                    insertrow(i,0,fileinfolist);
                     check.insert(check.begin()+j,m);
                 }
                 else
@@ -104,7 +136,7 @@ else if(b)
                 {
                     if(n<=m)
                     {
-                        insertrow(i,j);
+                        insertrow(i,j,fileinfolist);
                         check.insert(check.begin()+j,m);
                         break;
                     }
@@ -115,7 +147,7 @@ else if(b)
                 }
                     if(j==check.size())
                     {
-                        insertrow(i,j);
+                        insertrow(i,j,fileinfolist);
                         check.insert(check.begin()+j,m);
                     }
                 }
@@ -159,17 +191,16 @@ else
             double m=m/filename.length();
             if(check.empty())
             {
-                insertrow(i,0);
+                insertrow(i,0,fileinfolist);
                 check.insert(check.begin()+j,m);
             }
             else
             {
                 for(auto n:check)
             {
-                    qDebug()<<n;
                 if(n<=m)
                 {
-                    insertrow(i,j);
+                    insertrow(i,j,fileinfolist);
                     check.insert(check.begin()+j,m);
                     break;
                 }
@@ -180,7 +211,7 @@ else
             }
                 if(j==check.size())
                 {
-                    insertrow(i,j);
+                    insertrow(i,j,fileinfolist);
                     check.insert(check.begin()+j,m);
                 }
             }
@@ -191,6 +222,39 @@ else
 
 void MainWindow::on_tableWidget_customContextMenuRequested(const QPoint &pos)
 {
-    pop->addAction(action);
-    pop->exec(QCursor::pos());
+    QPoint point1=QCursor::pos();
+
+    QTableWidgetItem *item = ui->tableWidget->itemAt(pos);
+    if(item != NULL&&item->column()==0)
+    {
+        filename=item->text();
+
+        pop->clear(); //清除原有菜单
+        pop->addAction(action);
+        pop->addAction(action2);
+        pop->exec(point1);
+    }
+
+}
+
+void MainWindow::start()
+{
+    QDesktopServices::openUrl(QUrl::fromLocalFile(path+"\\"+filename));
+}
+
+void MainWindow::del()
+{
+    QFile file(path+"\\"+filename);
+    file.remove();
+}
+
+void MainWindow::on_action_triggered()
+{
+    watch->removePath(path);
+    QString directory =
+        QDir::toNativeSeparators(QFileDialog::getExistingDirectory(this, tr("Find Files"), QDir::currentPath()));
+    qDebug()<<directory;
+    this->path=directory;
+    watch->addPath(path);
+    search(ui->lineEdit->displayText());
 }
