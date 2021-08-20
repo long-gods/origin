@@ -38,6 +38,8 @@ mutable（可变） int   //这样声明在const 函数中也可以被更改
 
 
 
+#### 确定对象被使前已先被初始化
+
 ![image-20210730093755219](image\image-20210730093755219.png)
 
 ![image-20210730093729535](image\image-20210730093729535.png)
@@ -50,9 +52,55 @@ mutable（可变） int   //这样声明在const 函数中也可以被更改
 
 为避免阅读者看你的代码迷惑和出现错误（某些成员变量的初始化带有次序性，如数组在初始化时需要指定大小，因此代表大小的那个成员变量必须先初始化。），在初值列中条列各个成员时，最好总是以声明次序为次序。
 
+​	为内置型对象进行手工初始化，因为c++不保证初始化他们。
+
+​	为免除“跨编译单元之初始化次序”问题，以local static对象替换non-local static对象。
+
+#### 了解C++默默编写并调用哪些函数
+
+​	引用自身不可被改动，C++拒绝编译关于引用的赋值动作。
+
+​	编译器可以暗自为class创建default构造函数，copy构造函数，copy assignment操作符，以及析构函数。
+
+#### 若不想使用编译器自动生成的函数，就应该明确拒绝
+
+​	编译器产出的函数都是public，为阻止他们被创建出来，可以自行声明他们并将它们声明为private，使得阻止被调用。
+
+​	函数参数名称并非必要（可以不写）：void a（const int&）
+
+​	使用像Uncopyable这样的base class也是一种做法。
+
+```c++
+class Uncopyable{
+    protected:
+    Uncopyable(){}
+    ~Uncopyable(){}
+    private:
+    Uncopyable(const Uncopyable&);
+    Uncopyable& operator=(const Uncopyable&);
+}
+
+class HomeForSale:private Uncopyable{...};
+```
+
+#### 为多态基类声明virtual析构函数
+
+​	当derived class对象经由一个base class指针被删除，而基类带着一个non-virtual析构函数，其结果未有定义--实际执行时通常发生的是对象的derived成分没被销毁。造成一个诡异的“局部销毁”对象。这会导致资源泄漏，败坏数据结构，在调试器上浪费许多时间。
+
+​	![20210818220514](image\20210818220514.png)
 
 
 
+```c++
+class AWOV{
+    public:
+    virtual ~AWOV()=0;//必须为这个纯虚函数提供一份定义
+}
 
+AWOV::~AWOV(){}//纯虚析构函数的定义
+```
 
+​	析构函数的运作方式是，最深层派生的那个class的析构函数最先被调用，然后是其每一个base class的析构函数被调用。编译器会在AWOV的派生类的析构函数中创建一个对~AWOV的调用动作，所以必须为这个函数提供一份定义。不然连接器会报错。
+
+​	classed的设计目的如果不是作为base class 使用，或不是为了具备多态性，就不该声明virtual析构函数。
 
