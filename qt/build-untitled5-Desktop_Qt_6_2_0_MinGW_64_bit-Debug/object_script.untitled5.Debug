@@ -1,0 +1,10 @@
+debug/HttpOp.o
+debug/form.o
+debug/main.o
+debug/mainwindow.o
+debug/test1.o
+debug/webtest.o
+debug/moc_form.o
+debug/moc_mainwindow.o
+debug/moc_test1.o
+debug/moc_webtest.o

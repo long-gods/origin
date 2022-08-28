@@ -1,0 +1,10 @@
+release/HttpOp.o
+release/form.o
+release/main.o
+release/mainwindow.o
+release/test1.o
+release/webtest.o
+release/moc_form.o
+release/moc_mainwindow.o
+release/moc_test1.o
+release/moc_webtest.o

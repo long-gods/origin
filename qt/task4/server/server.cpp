@@ -3,6 +3,7 @@
 #include<QJsonObject>
 #include<QJsonArray>
 #include<QJsonDocument>
+
 server::server(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::server)
@@ -64,3 +65,13 @@ void server::ReadData()
         //指定连接
 
 }
+
+
+void server::on_pushButton_clicked()
+{
+    tcpServer->close();
+        tcpServer->listen(QHostAddress::Any, ui->lineEdit_2->text().toInt());
+}
+
+
+

@@ -55,7 +55,8 @@ void Myclient::on_pushButton_clicked()
 
     QJsonDocument Document;
     Document.setArray(text);
-    QByteArray ByteArray=Document.toJson(QJsonDocument::Compact);
+    QByteArray ByteArray=str.toUtf8();
+//    QByteArray ByteArray=Document.toJson(QJsonDocument::Compact);
     if(str!="")
         tcpClient->write(ByteArray);
     ui->textEdit_2->setText("");

@@ -98,7 +98,8 @@ void MainWindow::search(QString name)
     ui->tableWidget->setRowCount(0); //函数清除表格数据区的所有内容，但是不清除表头。
     QDir fileDir(path);
     QFileInfoList fileinfolist=fileDir.entryInfoList();
-    bool b = name.contains(QRegExp("[\\x4e00-\\x9fa5]+"));
+    QRegularExpression QRegExp("[\\x4e00-\\x9fa5]+");
+    bool b = name.contains(QRegExp.pattern());
 if(name=="")
 {
     for(int i=0;i<fileinfolist.count();i++)
@@ -112,7 +113,7 @@ else if(b)
     for(int i=0;i<fileinfolist.count();i++)
     {
         int j=0;
-        if(fileinfolist.at(i).fileName().contains(QRegExp("[\\x4e00-\\x9fa5]+")))
+        if(fileinfolist.at(i).fileName().contains(QRegExp.pattern()))
         {
             QString filename=fileinfolist.at(i).fileName();
             double m=0;
@@ -168,7 +169,7 @@ else
         int j=0;
         double m=0;
         QString filename;
-        if(fileinfolist.at(i).fileName().contains(QRegExp("[\\x4e00-\\x9fa5]+")))
+        if(fileinfolist.at(i).fileName().contains(QRegExp.pattern()))
         {
             filename=CNLHelper::Instance()->CNToEL(fileinfolist.at(i).fileName());
             qDebug()<<filename;

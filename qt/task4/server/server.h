@@ -28,6 +28,7 @@ private slots:
     void NewConnectionSlot();
 //    void disconnectedSlot();
     void ReadData();
+    void on_pushButton_clicked();
 };
 
 #endif // SERVER_H
